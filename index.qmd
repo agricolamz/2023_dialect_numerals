@@ -1,0 +1,47 @@
+---
+title: "Listen to dialect numerals"
+format: html
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+df <- readxl::read_xlsx("numerals_dialects_Alsu.xlsx")
+
+df |> 
+  mutate(url = case_when(corpus == 'data_dialect_zvenigorod' ~ "http://lingconlab.ru/zvenigorod/",
+                         corpus == 'data_dialect_lukh_and_teza' ~ "http://lingconlab.ru/lukhteza/",
+                         corpus == 'data_dialect_khislavichi' ~ "http://lingconlab.ru/khislavichi/",
+                         corpus == 'data_dialect_opochka' ~ "http://lingconlab.ru/opochka/",
+                         corpus == 'data_dialect_makeevo' ~ "http://lingconlab.ru/shetnevo/",
+                         corpus == 'data_dialect_rogovatka' ~ "http://lingconlab.ru/rogovatka/",
+                         corpus == 'data_dialect_tserkovnoe' ~ "http://lingconlab.ru/tserkovnoe/",
+                         corpus == 'data_dialect_keba' ~ "http://lingconlab.ru/keba/",
+                         corpus == 'data_dialect_spiridonova_buda' ~ "http://lingconlab.ru/SpiridonovaBuda/",
+                         corpus == 'data_dialect_malinino' ~ "http://lingconlab.ru/malinino/",
+                         corpus == 'data_dialect_upper_pinega_and_vyya' ~ "http://lingconlab.ru/vaduga/",
+                         corpus == 'data_dialect_luzhnikovo' ~ "http://lingconlab.ru/luzhnikovo/",
+                         corpus == 'data_dialect_kostroma' ~ "http://lingconlab.ru/manturovo/",
+                         corpus == 'data_dialect_nekhochi' ~ "http://lingconlab.ru/nekhochi/",
+                         corpus == 'dialect_khislavichi' ~ "http://lingconlab.ru/khislavichi/",
+                         corpus == 'dialect_lukh_and_teza' ~ "http://lingconlab.ru/lukhteza/",
+                         corpus == 'dialect_luzhnikovo' ~ "http://lingconlab.ru/luzhnikovo/",
+                         corpus == 'dialect_manturovo' ~ "http://lingconlab.ru/manturovo/",
+                         corpus == 'dialect_pyoza' ~ "http://lingconlab.ru/pyoza/",
+                         corpus == 'dialect_rogovatka' ~ "http://lingconlab.ru/rogovatka/",
+                         corpus == 'dialect_upperpinega_and_vyya' ~ "http://lingconlab.ru/vaduga/",
+                         corpus == 'dialect_ustya' ~ "www.parasolcorpus.org/Pushkino/",
+                         corpus == 'dialect_keba' ~ "http://lingconlab.ru/keba/"),
+         url = str_c(url, "OUT/"),
+         audio = str_remove(source, ".eaf"),
+         audio = str_c(audio, "-", round(as.double(time_start)*1000)),
+         audio = str_c(audio, "-", round(as.double(time_end)*1000)),
+         audio = str_c(url, audio, ".wav")) |> 
+  mutate(audio = glue::glue('<audio controls="" preload="none"><source src="{audio}" type="audio/ogg"></audio> ')) %>% 
+  select(sentence, audio) |> 
+  DT::datatable(escape = FALSE, rownames = FALSE)
+```
+
+
